@@ -1,13 +1,12 @@
-'use strict';
-
 const getAccessToken = async (z, bundle) => {
   const response = await z.request({
-    url: 'https://auth-json-server.zapier-staging.com/oauth/access-token',
+    url: 'https://api.ouraring.com/oauth/token',
     method: 'POST',
     body: {
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
       grant_type: 'authorization_code',
+      redirect_uri: '{{bundle.inputData.redirect_uri}}',
       code: bundle.inputData.code,
 
       // Extra data can be pulled from the querystring. For instance:
@@ -30,7 +29,7 @@ const getAccessToken = async (z, bundle) => {
 
 const refreshAccessToken = async (z, bundle) => {
   const response = await z.request({
-    url: 'https://auth-json-server.zapier-staging.com/oauth/refresh-token',
+    url: 'https://api.ouraring.com/oauth/token',
     method: 'POST',
     body: {
       client_id: process.env.CLIENT_ID,
@@ -68,9 +67,8 @@ const includeBearerToken = (request, z, bundle) => {
 // to test auth, or one that every user will have access to. eg: `/me`.
 // By returning the entire request object, you have access to the request and
 // response data for testing purposes. Your connection label can access any data
-// from the returned response using the `json.` prefix. eg: `{{json.username}}`.
-const test = (z, bundle) =>
-  z.request({ url: 'https://auth-json-server.zapier-staging.com/me' });
+// from the returned response using the `json.` prefix. eg: `{{json.username}}https://cloud.ouraring.com/api/me`.
+const test = (z, bundle) => z.request({ url: 'https://api.ouraring.com/v2/usercollection/personal_info' });
 
 module.exports = {
   config: {
@@ -79,12 +77,13 @@ module.exports = {
     type: 'oauth2',
     oauth2Config: {
       authorizeUrl: {
-        url: 'https://auth-json-server.zapier-staging.com/oauth/authorize',
+        url: 'https://cloud.ouraring.com/oauth/authorize',
         params: {
           client_id: '{{process.env.CLIENT_ID}}',
           state: '{{bundle.inputData.state}}',
           redirect_uri: '{{bundle.inputData.redirect_uri}}',
           response_type: 'code',
+          scope: 'email daily',
         },
       },
       getAccessToken,
@@ -107,7 +106,7 @@ module.exports = {
     // be `{{X}}`. This can also be a function that returns a label. That function has
     // the standard args `(z, bundle)` and data returned from the test can be accessed
     // in `bundle.inputData.X`.
-    connectionLabel: '{{json.username}}',
+    connectionLabel: '{{json.email}}',
   },
   befores: [includeBearerToken],
   afters: [],
