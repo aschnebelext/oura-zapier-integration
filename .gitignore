@@ -1,3 +1,4 @@
 .env
+.zapierapprc
 node_modules
 .idea
