@@ -7,7 +7,7 @@ const { getRestingHeartRate, getRestfulness } = require('./sleepUtils');
 const { getPercentOf } = require('../../utils/mathUtils');
 
 const perform = async (z, bundle) => {
-  const [start_date, end_date] = getDateRange(bundle.inputData.startDate, bundle.inputData.endDate);
+  const [start_date, end_date] = getDateRange();
 
   const getSleepSummary = async (start_date) => {
     const response = await z.request(
@@ -24,7 +24,8 @@ const perform = async (z, bundle) => {
       id: sleepEntry.day,
       bedtimeStart: new Date(sleepEntry.bedtime_start).toISOString(),
       bedtimeEnd: new Date(sleepEntry.bedtime_end).toISOString(),
-      sleepScore: sleepSummary?.score, // TBD
+      bedtimeEnd4HoursThreshold: new Date(sleepEntry.bedtime_end).addHours(4).toISOString(),
+      sleepScore: sleepSummary?.score,
       restingHeartRate: getRestingHeartRate(sleepEntry.heart_rate.items || []),
       averageHeartRate: sleepEntry.average_heart_rate,
       sleepEfficiency: sleepEntry.efficiency / 100,
@@ -83,25 +84,17 @@ module.exports = {
   noun: 'Sleep',
 
   display: {
-    label: 'Daily Sleep',
-    description: 'Triggers when a new daily sleep entry is created.',
+    label: 'Create Night Sleep Record',
+    description: 'Triggers when a sleep entry from last night is processed.',
   },
 
   operation: {
     perform,
-
-    inputFields: [
-      {
-        key: 'startDate', required: true, type: 'datetime', label: 'Start Date to track Sleep Data', helpText: 'Required format: YYYY-MM-DD',
-      },
-      {
-        key: 'endDate', required: false, type: 'datetime', label: 'End Date to track Sleep Data', helpText: 'Required format: YYYY-MM-DD',
-      },
-    ],
     sample: {
       id: '2022-08-22',
-      bedtimeStart: '2022-08-21T22:05:30+02:00',
-      bedtimeEnd: '2022-08-22T06:43:30+02:00',
+      bedtimeStart: '2022-08-21T22:05:30Z',
+      bedtimeEnd: '2022-08-22T06:43:30Z',
+      bedtimeEnd4HoursThreshold: '2022-08-22T10:43:30Z',
       sleepScore: 75,
       restingHeartRate: 54,
       averageHeartRate: 72.75,
@@ -151,9 +144,16 @@ module.exports = {
       },
       // Bed Time End
       {
-        key: 'bedtimeStart',
-        label: 'Bed Time Start',
-        helpText: 'Bed Time Start in ISO-8601 format (e.g. 2022-08-22T06:43:30+02:00)',
+        key: 'bedtimeEnd',
+        label: 'Bed Time End',
+        helpText: 'Bed Time End in ISO-8601 format (e.g. 2022-08-22T06:43:30+02:00)',
+        type: 'string',
+      },
+      // Bed Time End 4 Hours Threshold
+      {
+        key: 'bedtimeEnd4HoursThreshold',
+        label: 'Bed Time End Threshold',
+        helpText: 'Use this value in combination with condition in Zapier to only trigger event after 4 hours. Oura usually needs at least 4 hours to process the last night.',
         type: 'string',
       },
       // Sleep Score

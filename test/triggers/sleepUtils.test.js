@@ -1,4 +1,4 @@
-const { getRestingHeartRate, getRestfulness } = require('../../triggers/sleep/sleepUtils');
+const { getRestingHeartRate, getRestfulness } = require('../../triggers/nightSleep/sleepUtils');
 
 describe('sleepUtils', () => {
   describe('getRestingHeartRate', () => {

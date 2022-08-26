@@ -4,7 +4,7 @@ const {
   afters = [],
 } = require('./authentication');
 
-const getSleep = require('./triggers/sleep/sleep');
+const getNightSleep = require('./triggers/nightSleep/nightSleep');
 
 module.exports = {
   // This is just shorthand to reference the installed dependencies you have.
@@ -20,7 +20,7 @@ module.exports = {
 
   // If you want your trigger to show up, you better include it here!
   triggers: {
-    [getSleep.key]: getSleep,
+    [getNightSleep.key]: getNightSleep,
   },
 
   // If you want your searches to show up, you better include it here!
