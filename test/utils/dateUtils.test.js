@@ -55,5 +55,19 @@ describe('dateUtils', () => {
       expect(start).not.toBeUndefined();
       expect(end).not.toBeUndefined();
     });
+
+    it('should return today and yesterday when no value is provided', () => {
+      // Arrange
+      let yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      yesterday = getFormattedDate(yesterday)
+      const today = getFormattedDate(new Date())
+      // Act
+      const [start, end] = getDateRange();
+
+      // Assert
+      expect(start).toEqual(yesterday)
+      expect(end).toEqual(today)
+    });
   });
 });

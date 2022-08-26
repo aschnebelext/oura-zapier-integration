@@ -1,10 +1,15 @@
+Date.prototype.addHours = function(h){
+  this.setHours(this.getHours()+h);
+  return this;
+}
+
 const getFormattedDate = (date) => date && new Intl.DateTimeFormat('fr-ca').format(date);
 
-const getDateRange = (startDate, endDate) => {
-  let start_date = startDate && new Date(startDate);
-  let end_date = endDate && new Date(endDate);
+const getDateRange = (startDate = new Date(), endDate = startDate) => {
+  let start_date = new Date(startDate);
+  let end_date =  new Date(endDate);
 
-  if (end_date && (start_date > end_date)) {
+  if (start_date > end_date) {
     return [null, null];
   }
 
