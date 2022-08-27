@@ -7,7 +7,7 @@ This Repository uses the [Oura API](https://cloud.ouraring.com/docs/) V2 to sync
 We are currently in contact with Oura to make this Integration publicly available. We can't make any promises, if and when it becomes publicly available.
 
 Until further notice, there are two options to use the Oura Ring Zapier Integration:
-1. **Invite:** Create an Issue and leave your Email which is registered in Zapier. We will invite you.
+1. **Invite:** DM [at Twitter](https://twitter.com/alexschnebel) and leave your Email which is registered in Zapier. We will invite you.
 2. **Custom App:** Follow the instructions below and create your own Oura Ring Zapier integration.
 
 ## Contribution Guidelines
