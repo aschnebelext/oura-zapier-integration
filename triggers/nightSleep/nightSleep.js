@@ -1,24 +1,19 @@
 // triggers on a new sleep with a certain tag
-const { getDateRange } = require('../../utils/dateUtils');
-const {
-  getTotalMinutes, getMinutes, getHours, getReadableTime,
-} = require('../../utils/timeUtils');
-const { getRestingHeartRate, getRestfulness } = require('./sleepUtils');
-const { getPercentOf } = require('../../utils/mathUtils');
+const { getDateRange } = require('../../utils/dateUtils')
+const { getTotalMinutes, getMinutes, getHours, getReadableTime } = require('../../utils/timeUtils')
+const { getRestingHeartRate, getRestfulness } = require('./sleepUtils')
+const { getPercentOf } = require('../../utils/mathUtils')
 
-const perform = async (z, bundle) => {
-  const [start_date, end_date] = getDateRange();
+const perform = async (z) => {
+  const [start_date, end_date] = getDateRange()
 
   const getSleepSummary = async (start_date) => {
-    const response = await z.request(
-      'https://api.ouraring.com/v2/usercollection/daily_sleep',
-      { params: { start_date } },
-    );
-    return response.json.data?.[0] || null;
-  };
+    const response = await z.request('https://api.ouraring.com/v2/usercollection/daily_sleep', { params: { start_date } })
+    return response.json.data?.[0] || null
+  }
 
   const mapToOutputField = async (sleepEntry) => {
-    const sleepSummary = await getSleepSummary(sleepEntry.day);
+    const sleepSummary = await getSleepSummary(sleepEntry.day)
 
     return {
       id: sleepEntry.day,
@@ -58,24 +53,21 @@ const perform = async (z, bundle) => {
       deepSleepHours: getHours(sleepEntry.deep_sleep_duration),
       deepSleepPercent: getPercentOf(sleepEntry.deep_sleep_duration, sleepEntry.total_sleep_duration),
       readableDeepSleep: getReadableTime(sleepEntry.deep_sleep_duration),
-    };
-  };
+    }
+  }
 
   const mapToOutputFields = async (sleepArray) => {
-    const sleep = [];
+    const sleep = []
     for (const sleepEntry of sleepArray) {
-      sleep.push(await mapToOutputField(sleepEntry));
+      sleep.push(await mapToOutputField(sleepEntry))
     }
-    return sleep;
-  };
+    return sleep
+  }
 
-  const response = await z.request(
-    'https://api.ouraring.com/v2/usercollection/sleep',
-    { params: { start_date, end_date } },
-  );
+  const response = await z.request('https://api.ouraring.com/v2/usercollection/sleep', { params: { start_date, end_date } })
 
-  return mapToOutputFields(response.json.data);
-};
+  return mapToOutputFields(response.json.data)
+}
 
 module.exports = {
   // see here for a full list of available properties:
@@ -153,7 +145,8 @@ module.exports = {
       {
         key: 'bedtimeEnd4HoursThreshold',
         label: 'Bed Time End Threshold',
-        helpText: 'Use this value in combination with condition in Zapier to only trigger event after 4 hours. Oura usually needs at least 4 hours to process the last night.',
+        helpText:
+          'Use this value in combination with condition in Zapier to only trigger event after 4 hours. Oura usually needs at least 4 hours to process the last night.',
         type: 'string',
       },
       // Sleep Score
@@ -188,7 +181,7 @@ module.exports = {
       {
         key: 'restfulness',
         label: 'Restfulness',
-        helpText: 'Restfulness (e.g. \'Pay attention\')',
+        helpText: "Restfulness (e.g. 'Pay attention')",
         choices: ['OPTIMAL', 'GOOD', 'PAY_ATTENTION', 'NOT_APPLICABLE'],
       },
       // Latency
@@ -368,4 +361,4 @@ module.exports = {
       },
     ],
   },
-};
+}

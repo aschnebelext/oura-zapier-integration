@@ -1,25 +1,26 @@
 const getRestingHeartRate = (heartRates) => {
-  const sanitizedHeartRates = heartRates.filter((rate) => rate != null);
+  const sanitizedHeartRates = heartRates.filter((rate) => rate != null)
 
   if (sanitizedHeartRates.length === 0) {
-    return 0;
+    return 0
   }
 
-  return Math.min(...sanitizedHeartRates);
-};
+  return Math.min(...sanitizedHeartRates)
+}
 
 const getRestfulness = (score) => {
-  if (score == null) return 'NOT_APPLICABLE';
+  if (score == null) return 'NOT_APPLICABLE'
 
   if (score >= 85) {
-    return 'OPTIMAL';
-  } if (score >= 70) {
-    return 'GOOD';
+    return 'OPTIMAL'
   }
-  return 'PAY_ATTENTION';
-};
+  if (score >= 70) {
+    return 'GOOD'
+  }
+  return 'PAY_ATTENTION'
+}
 
 module.exports = {
   getRestingHeartRate,
   getRestfulness,
-};
+}
