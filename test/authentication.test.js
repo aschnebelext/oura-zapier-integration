@@ -1,11 +1,11 @@
 /* globals describe, it, expect, beforeAll */
-const zapier = require('zapier-platform-core');
+const zapier = require('zapier-platform-core')
 
-zapier.tools.env.inject(); // read from the .env file
+zapier.tools.env.inject() // read from the .env file
 
-const App = require('../index');
+const App = require('../index')
 
-const appTester = zapier.createAppTester(App);
+const appTester = zapier.createAppTester(App)
 
 describe('oauth2 app', () => {
   beforeAll(() => {
@@ -13,9 +13,9 @@ describe('oauth2 app', () => {
     if (!(process.env.CLIENT_ID && process.env.CLIENT_SECRET)) {
       throw new Error(
         'Before running the tests, make sure CLIENT_ID and CLIENT_SECRET are available in the environment.',
-      );
+      )
     }
-  });
+  })
 
   it('generates an authorize URL', async () => {
     const bundle = {
@@ -27,16 +27,45 @@ describe('oauth2 app', () => {
       environment: {
         CLIENT_ID: process.env.CLIENT_ID,
         CLIENT_SECRET: process.env.CLIENT_SECRET,
-      },
-    };
+      }
+    }
 
     const authorizeUrl = await appTester(
       App.authentication.oauth2Config.authorizeUrl,
       bundle,
-    );
+    )
 
     expect(authorizeUrl).toBe(
       `https://cloud.ouraring.com/oauth/authorize?client_id=${process.env.CLIENT_ID}&state=4444&redirect_uri=https%3A%2F%2Fzapier.com%2F&response_type=code&scope=email%20daily`,
-    );
+    )
+  })
+
+  it('can fetch an access token', () => {
+    return appTester(App.authentication.oauth2Config.getAccessToken)
+        .then((result) => {
+          expect(result.access_token).toEqual('ran0mAccessT0ken')
+          expect(result.refresh_token).toEqual('rand0mRefreshT0ken')
+        })
+  })
+
+  it('can refresh the access token', () => {
+    return appTester(App.authentication.oauth2Config.refreshAccessToken)
+        .then((result) => {
+          expect(result.access_token).toEqual('ran0mAccessT0ken')
+        })
+  })
+
+  it('includes the access token in future requests', () => {
+    const bundle = {
+      authData: {
+        access_token: 'a_token',
+        refresh_token: 'a_refresh_token'
+      },
+    };
+
+    return appTester(App.authentication.test, bundle)
+        .then((result) => {
+          expect(result.data.email).toEqual('hello@example.com')
+        });
   });
-});
+})

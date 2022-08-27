@@ -15,6 +15,5 @@ describe('triggers.sleep', () => {
 
     const results = await appTester(App.triggers.sleep.operation.perform, bundle);
     expect(results).toBeDefined();
-    // TODO: add more assertions
   });
 });
