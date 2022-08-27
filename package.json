@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --testTimeout 10000",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "setup": "npm install && npm run prepare"
   },
   "dependencies": {
     "zapier-platform-core": "12.0.3"

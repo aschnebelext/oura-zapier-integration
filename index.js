@@ -1,6 +1,6 @@
-const { config: authentication, befores = [], afters = [] } = require('./authentication')
+const { config: authentication, befores = [], afters = [] } = require('./src/authentication')
 
-const getNightSleep = require('./triggers/nightSleep/nightSleep')
+const getNightSleep = require('./src/triggers/nightSleep/nightSleep')
 
 module.exports = {
   // This is just shorthand to reference the installed dependencies you have.

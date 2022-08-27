@@ -1,4 +1,4 @@
-const { server } = require('./mocks/server.js')
+const { server } = require('./src/mocks/server.js')
 // Establish API mocking before all tests.
 beforeAll(() => server.listen())
 // Reset any request handlers that we may add during the tests,
